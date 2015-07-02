@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Socket.IO Chat Example</title>
+<link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+
+<div id="logs">
+<div id="login-info">
+	<div id="login_form">
+login<input type="text" value="Olivier" name="form_login" id="form_name" maxlength="15"/>
+passw<input type="password" value="Olivier" name="form_passw" id="form_passw" maxlength="15"/>
+		<button id="login_send">login</button>
+	</div>
+	</div>
+	<div id="logs">
+	</div>	
+</div>
+
+<div id="main-content">
+<div class="left-panel" id="room-list">
+<div class="rooms">
+</div>
+</div>
+<div class="main-panel" id="message-panel">
+	<div class="room-legend">please connect</div>
+	<div class="chatArea" id="room0">
+		<ul class="messages messageField"></ul>
+	</div>
+	<input class="inputMessage" id="inputMessage" placeholder="Type here..."/>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/dom.js"></script>
+<script src="/socket.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>

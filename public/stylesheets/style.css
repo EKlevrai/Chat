@@ -1,0 +1,51 @@
+body {
+  padding: 10px 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+div#logs {
+border : 1px solid black;
+}
+div#main-content{
+	border : 1px solid black;
+	display: flex;
+	flex-wrap: nowrap;
+	align_item : stretch;
+}
+
+div#room-list{
+	border : 1px solid black;
+	width : 150pt;
+	min-height : 150pt;
+    overflow-x : hidden;
+}
+div.rooms{
+display : flex;
+flex-wrap: nowrap;
+flex-direction : column;
+}
+
+
+div#message-panel{
+	border : 1px solid black;
+	flex : 1;
+	min-height : 150pt;
+	max-height : 400pt;	
+	display : flex;
+	flex-direction:column;
+}
+.chatArea{
+	min-height : 150pt;
+	max-height : 400pt;	
+    overflow-y : visible;
+    overflow-x : hidden;
+}
+.inputMessage,.room-legend{
+	flex : 1 0 20px;
+}
+.room-legend{
+	border : 1px solid black;
+}
+.messageField{
+flex : 1 1 0;
+}
