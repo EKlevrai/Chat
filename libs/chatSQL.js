@@ -139,12 +139,47 @@ var mysql = require('mysql');
 		})
 		
 	};
-
 	
-	module.exports.connectUser = function(username,key,whatToDo) {return connectUser(username,key,whatToDo); }
+	/**
+	 * give all information of a user from its id_user
+	 * @param uid :  the id of the user
+	 * @param args : array of args we ask
+	 * @param whatToDo callback function fct({arg1 : r1 ,...})
+	 */
+	 var uInfo = function(uid,args,whatToDo){
+		var mySQLConnection = mysql.createConnection({
+			host     : global.mysql_host,
+			user     : global.mysql_user,
+			password : global.mysql_password,
+			database : global.mysql_database
+		});
+		/*On genere la query à partir des infos*/
+		mySQLConnection.query(''
+			+'SELECT ? FROM FauchChatUser '
+			+'WHERE id = ? '
+			+'ORDER BY id DESC LIMIT 1;',[args,uid],
+			function(err, rows, fields) {
+				mySQLConnection.end();
+				if (err) throw err;
+				if(rows.length==1){
+				//we found a correct entry in the db which is unique(1row only),
+					whatToDo(rows[0]);
+				}
+				else {if(rows.length<1){
+						throw "no entry found";
+					}
+					else{
+						throw "too much entry found";
+					}
+				}
+			});
+	};
+	
+	module.exports.connectUser = function(uname,k,w) {return connectUser(uname,k,w); }
 	module.exports.linkRoom = function(room,whatToDo) {return peopleInRoom(room,whatToDo); }
 	module.exports.detailRoom = function(uid,whatToDo) {return roomDetailed(uid,whatToDo); }
 	module.exports.linkPeople = function(uid,whatToDo) {return roomForPeople(uid,whatToDo); }
 	module.exports.linkContact = function(uid,whatToDo) {return peopleForPeople(uid,whatToDo); }
 	module.exports.inCommon = function(uid1,uid2) {return isInCommon(uid1,uid2); }
+	module.exports.uInfo = function(uid,a,w) {return uInfo(uid,a,w); }
 }());

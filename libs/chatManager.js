@@ -1,6 +1,8 @@
 module.paths.push('/usr/local/lib/node_modules');
 var chatSQL=require('./chatSQL.js');
 var chatLog=require('./chatLog.js');
+var chatSession=require('./sessionID.js');
+
 
 /** @param sckt : the socket of the main user
 * 				- uid : the user_id
@@ -50,8 +52,6 @@ var chatLog=require('./chatLog.js');
 	 * 				_username : the nickname
 	 * */
 	var  logIn =  function(data,connectedUsers,sckt) {
-		//on identifie TODO
-
 		chatSQL.connectUser(data.user,data.key,
 			function(connectInfo){
 				if(connectInfo.isConnected){
@@ -70,7 +70,8 @@ var chatLog=require('./chatLog.js');
 						rooms.forEach(function(entry){
 							chatLog.getHistory(entry.id,function(msgs){
 								msgs.forEach(function(e2,index2){
-									chatLog.parseToMessage(e2,function(msg){										sckt.emit('recover_history',{
+									chatLog.parseToMessage(e2,function(msg){										
+										sckt.emit('recover_history',{
 											roomId : entry,
 											messages : [msg]
 										});
@@ -100,6 +101,62 @@ var chatLog=require('./chatLog.js');
 		});
 
 	};
+	
+	
+	/**
+	 * react to the "login" socket.io event [via connectionID] 
+	 * @param data : the data of the login
+	 * 			- userID : the id of the user
+	 * 			- connectionID : the id of the connection
+	 * @param connected_users : the list of sockets of differents users connected
+	 * @param sckt : the socket of the main user
+	 * 				- uid : the user_id
+	 * 				_username : the nickname
+	 * */
+	var  connect =  function(data,connectedUsers,sckt) {
+		chatSession.getUid(data.cid,function(userId){
+			if (userId==data.uid){//normalement c'est le cas : la connection est valide :: on charge les info et on connecte
+				chatSQL.uInfo(userId,['login'],function(args){
+					sckt.uid = userId;
+					sckt.username = args.login;
+					chatSQL.detailRoom(sckt.uid,function(rooms){
+					//log to the user its loggin and its rooms
+						console.log("logged "+sckt.username);
+						sckt.emit('login_success', {
+							username : data.user,
+							rooms : rooms
+						});
+					//lookup to the rooms and recover history
+						rooms.forEach(function(entry){
+							chatLog.getHistory(entry.id,function(msgs){
+								msgs.forEach(function(e2,index2){
+									chatLog.parseToMessage(e2,function(msg){										
+										sckt.emit('recover_history',{
+											roomId : entry,
+											messages : [msg]
+										});
+									});
+								});
+							});
+						});							
+				});
+				chatSQL.linkContact(sckt.uid,function(users){
+					users.forEach(function(entry){
+						connectedUsers.forEach(function(e2){
+							if(entry!=sckt.uid && entry.uid==e2.uid)
+								e2.emit('user joined', {
+									username: sckt.username
+								});
+						});
+					});
+				});	
+			});
+		}
+			else logFail(sckt);		
+		});
+
+	};
+	
 	var logFail=function(sckt){
 		if(sckt!=undefined)sckt.emit("logFail");
 	};
@@ -116,5 +173,6 @@ var chatLog=require('./chatLog.js');
 
 	module.exports.newMessage = function(data,connectedUsers,sckt) {return newMessage(data,connectedUsers,sckt); }
 	module.exports.login = function(data,connectedUsers,sckt) {return logIn(data,connectedUsers,sckt); }
+	module.exports.connect = function(data,connectedUsers,sckt) {return connect(data,connectedUsers,sckt); }
 	module.exports.logout = function(connectedUsers,sckt) {return logOut(connectedUsers,sckt); }
 }());

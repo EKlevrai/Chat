@@ -3,20 +3,21 @@
  * @param username : the name of the newly connected user
  */
 function navbarConnected(username){
-	var logs = document.getElementById("login-info");
-	while (logs.firstChild) {
-		logs.removeChild(logs.firstChild);
-	}
 
-	var logSuccess = document.createElement('div');
-	logSuccess.appendChild(document.createTextNode("Welcome, "+username));
-	logSuccess.className += " log log_success"; 
+	var logs = document.querySelectorAll(".menu-logs li:not(.divider)");
+	
+	console.log(logs);
+	logs[0].removeChild(logs[0].firstChild);
+	logs[0].appendChild(document.createTextNode("Welcome, "+username));
+
+	logs[1].removeChild(logs[1].firstChild);
+
 	var buttonDisconnect = document.createElement('button')
 	buttonDisconnect.appendChild(document.createTextNode("disconnect"));
 	buttonDisconnect.id = "disconnect";
 	buttonDisconnect.onclick = function(){socket.emit("log_out");}
-	logs.appendChild(logSuccess);
-	logSuccess.appendChild(buttonDisconnect);
+	
+	logs[1].appendChild(buttonDisconnect);
 	
 }
 /**

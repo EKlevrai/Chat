@@ -1,11 +1,10 @@
 module.paths.push('/usr/local/lib/node_modules');
-var chatSQL=require('./chatSQL.js');
-var chatLog=require('./chatLog.js');
+
 var mysql = require('mysql');
 
-/** Session ID :  can be usefull to
- * get a user from a Sid
- * add a Sid to the DB and link it to a user
+/** connexion ID :  can be usefull to
+ * get a user from a Cid [do it in the socket connection]
+ * add a Cid to the DB and link it to a user [do it in the get("/chat") middleware]
  * flush all old Sid (checked via crontab)
  * kill all Sid except the trigger
  * 
@@ -33,10 +32,9 @@ var mysql = require('mysql');
 				if(rows.length==1){
 				//we found a correct entry in the db which is unique(1row only),and where user and session_id match
 				//Consequence we do what to do
-					whatToDo(rows[0].id_user);
+					whatToDo(rows[0].is_user);
 				}
-				else {
-					if(rows.length<1){
+				else {if(rows.length<1){
 						throw "no entry found";
 					}
 					else{
@@ -49,9 +47,8 @@ var mysql = require('mysql');
 	 * add in the DB the session who matches a userID and a sessionID
 	 * @param sid : the sessionId we want to match with userId
 	 * @param uid : the userId we want to match with sessionId
-	 * @param whatToDo : the callback to do with the userId fct() 
 	 * */ 
-	var add = function (sid, uid,whatToDo){
+	var add = function (sid, uid){
 			var mySQLConnection = mysql.createConnection({
 			host     : global.mysql_host,
 			user     : global.mysql_user,
@@ -65,7 +62,6 @@ var mysql = require('mysql');
 			function(err, rows, fields) {
 				mySQLConnection.end();
 				if (err) throw err;
-				whatToDo();
 			});
 		};
 	
@@ -73,6 +69,6 @@ var mysql = require('mysql');
 	
 
 
-	module.exports.add = function(s,u,w) {return add(s,u,w); }
+	module.exports.add = function(s,u) {return add(s,u); }
 	module.exports.getUid = function(s,w) {return getUid(s,w); }
 }());

@@ -3,10 +3,9 @@
  */
 var socket = io();
 
-//Sets the client's username
-document.getElementById("login_send").onclick=send_login;
-function send_login(){
-	socket.emit('login', {user : document.getElementById("form_name").value, key :document.getElementById("form_passw").value});
+function start(connectionID,userID){
+	socket.emit('login_session', { uid : userID , cid : connectionID });
+	console.log('ma bite')
 }
 
 

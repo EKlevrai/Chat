@@ -1,41 +1,65 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Socket.IO Chat Example</title>
+<link rel="stylesheet" href="/stylesheets/foundation.min.css">
+<link rel="stylesheet" href="/stylesheets/background.css">
 <link rel="stylesheet" href="/stylesheets/style.css">
+<script src="/scripts/socket.io.js"></script>
+<script src="/scripts/dom.js"></script>
+<script src="/scripts/socket.js"></script>
 </head>
 <body>
-
-
-<div id="logs">
-<div id="login-info">
-	<div id="login_form">
-login<input type="text" value="Olivier" name="form_login" id="form_name" maxlength="15"/>
-passw<input type="password" value="Olivier" name="form_passw" id="form_passw" maxlength="15"/>
-		<button id="login_send">login</button>
+<nav class="top-bar" data-topbar>
+	<ul class="title-area">
+		<li class="name"><h1>Chat</h1></li>
+	</ul>
+	<section class="top-bar-section">
+		<ul class="left">
+			<li class="divider"></li>
+			<li class="has-dropdown">
+				<a class="active" href="#">Chat</a>
+				<ul class="dropdown">
+					<li><label>Your services</label></li>
+					<li><a href="#">Git</a></li>
+					<li><a href="#">Files</a></li>
+					<li class="divider"></li>
+                	<li><label>Others Services</label></li>
+                	<li><a href="#">Compta</a></li>
+                	<li><a href="#">Clients</a></li>
+               		<li class="divider"></li>
+                	<li><a href="#">Tout les services...</a></li>
+            	</ul>
+            </li>
+            <li class="divider"></li>
+          	<li><a href="#">Settings</a></li>
+		</ul>
+		<ul class="right menu-logs">
+            		<li class="divider"></li>
+					<li>Connecting</li>
+            		<li class="divider"></li>
+					<li><a href="#">Log Out</a></li>
+        </ul>
+	</section>
+</nav>
+<div class="page-content">
+	<!--<div class="row">-->
+	<div id="main-content">
+		<div class="left-panel" id="room-list"> <!--class="large-3 columns"-->
+			<div class="rooms">
+			</div>
+		</div>
+		<div class="main-panel" id="message-panel"><!--large-9 columns-->
+			<div class="room-legend">please connect</div>
+			<div class="chatArea" id="room0">
+				<ul class="messages messageField"></ul>
+			</div>
+			<input class="inputMessage" id="inputMessage" placeholder="Type here..."/>
+		</div>
 	</div>
-	</div>
-	<div id="logs">
-	</div>	
 </div>
-
-<div id="main-content">
-<div class="left-panel" id="room-list">
-<div class="rooms">
-</div>
-</div>
-<div class="main-panel" id="message-panel">
-	<div class="room-legend">please connect</div>
-	<div class="chatArea" id="room0">
-		<ul class="messages messageField"></ul>
-	</div>
-	<input class="inputMessage" id="inputMessage" placeholder="Type here..."/>
-</div>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/dom.js"></script>
-<script src="/socket.js"></script>
-<script src="/main.js"></script>
 </body>
+<script src="/scripts/main.js"></script>
+<script>start("<%=connectionID%>",<%=userID%>)</script>
 </html>
