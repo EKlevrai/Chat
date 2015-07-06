@@ -2,10 +2,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Socket.IO Chat Example</title>
+<title>Chat</title>
 <link rel="stylesheet" href="/stylesheets/foundation.min.css">
 <link rel="stylesheet" href="/stylesheets/background.css">
 <link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="/stylesheets/font.css">
 <script src="/scripts/socket.io.js"></script>
 <script src="/scripts/dom.js"></script>
 <script src="/scripts/socket.js"></script>
@@ -13,13 +14,13 @@
 <body>
 <nav class="top-bar" data-topbar>
 	<ul class="title-area">
-		<li class="name"><h1>Chat</h1></li>
+		<li class="name"><span class="ico-chat"></span></li>
 	</ul>
 	<section class="top-bar-section">
 		<ul class="left">
 			<li class="divider"></li>
 			<li class="has-dropdown">
-				<a class="active" href="#">Chat</a>
+				<a class="active" href="#"><span class="ico-chat"></span></a>
 				<ul class="dropdown">
 					<li><label>Your services</label></li>
 					<li><a href="#">Git</a></li>
@@ -37,9 +38,9 @@
 		</ul>
 		<ul class="right menu-logs">
             		<li class="divider"></li>
-					<li>Connecting</li>
+					<li><a>Connecting</a></li>
             		<li class="divider"></li>
-					<li><a href="#">Log Out</a></li>
+					<li><a class="logout-button" href="/logout">Log Out</a></li>
         </ul>
 	</section>
 </nav>

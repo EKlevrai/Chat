@@ -7,18 +7,11 @@ function navbarConnected(username){
 	var logs = document.querySelectorAll(".menu-logs li:not(.divider)");
 	
 	console.log(logs);
-	logs[0].removeChild(logs[0].firstChild);
-	logs[0].appendChild(document.createTextNode("Welcome, "+username));
+	logs[0].firstChild.innerHTML="";
+	logs[0].firstChild.appendChild(document.createTextNode("Welcome, "+username));
 
-	logs[1].removeChild(logs[1].firstChild);
-
-	var buttonDisconnect = document.createElement('button')
-	buttonDisconnect.appendChild(document.createTextNode("disconnect"));
-	buttonDisconnect.id = "disconnect";
-	buttonDisconnect.onclick = function(){socket.emit("log_out");}
-	
-	logs[1].appendChild(buttonDisconnect);
-	
+	logs[1].firstChild.onclick = function(){socket.emit("log_out");};
+		
 }
 /**
  * change the navbar dom when the user is disconnected from the server 

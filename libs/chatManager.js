@@ -61,7 +61,7 @@ var chatSession=require('./sessionID.js');
 					chatSQL.detailRoom(sckt.uid,
 						function(rooms){
 						//log to the user its loggin and its rooms
-						console.log("logged "+sckt.username);
+						//console.log("logged "+sckt.username);
 						sckt.emit('login_success', {
 							username : data.user,
 							rooms : rooms
@@ -121,7 +121,7 @@ var chatSession=require('./sessionID.js');
 					sckt.username = args.login;
 					chatSQL.detailRoom(sckt.uid,function(rooms){
 					//log to the user its loggin and its rooms
-						console.log("logged "+sckt.username);
+						console.log("logged sessionID : "+sckt.username+" ");
 						sckt.emit('login_success', {
 							username : data.user,
 							rooms : rooms

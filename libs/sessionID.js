@@ -37,7 +37,8 @@ var mysql = require('mysql');
 				}
 				else {
 					if(rows.length<1){
-						throw "no entry found";
+						console.log("bibite");
+						throw new Error("no entry found");
 					}
 					else{
 						throw "too much entry found";
@@ -60,8 +61,8 @@ var mysql = require('mysql');
 		});
 		//query our trouver les sessions en fonction de l'id
 		mySQLConnection.query(''
-			+' INSERT INTO `FauchChatSessionId`(`id_user`,`session_id`) '
-			+' VALUES(?,?);',[uid,sid],
+			+' INSERT INTO `FauchChatSessionId`(`id_user`,`session_id`,last_use) '
+			+' VALUES(?,?,?);',[uid,sid,new Date().getTime().toString()],
 			function(err, rows, fields) {
 				mySQLConnection.end();
 				if (err) throw err;
@@ -69,10 +70,26 @@ var mysql = require('mysql');
 			});
 		};
 	
-	//var check = function(){}
-	
+	var rm =function(sid,uid){
+		var mySQLConnection = mysql.createConnection({
+			host     : global.mysql_host,
+			user     : global.mysql_user,
+			password : global.mysql_password,
+			database : global.mysql_database
+		});
+		//query our trouver les sessions en fonction de l'id
+		mySQLConnection.query(''
+			+' DELETE FROM `FauchChatSessionId` '
+			+' WHERE id_user=? AND session_id=? ;',[uid,sid],
+			function(err, rows, fields) {
+				mySQLConnection.end();
+				if (err) throw err;
+			});
+		};
 
+	//var check = function(){}
 
 	module.exports.add = function(s,u,w) {return add(s,u,w); }
+	module.exports.rm = function(s,u) {return rm(s,u); }
 	module.exports.getUid = function(s,w) {return getUid(s,w); }
 }());

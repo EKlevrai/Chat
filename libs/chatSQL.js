@@ -155,9 +155,11 @@ var mysql = require('mysql');
 		});
 		/*On genere la query à partir des infos*/
 		mySQLConnection.query(''
-			+'SELECT ? FROM FauchChatUser '
-			+'WHERE id = ? '
-			+'ORDER BY id DESC LIMIT 1;',[args,uid],
+			+'SELECT '
+			+' '+args.join()
+			+' FROM FauchChatUser '
+			+'WHERE id = ? '	
+			+'ORDER BY id DESC LIMIT 1;',[uid],
 			function(err, rows, fields) {
 				mySQLConnection.end();
 				if (err) throw err;

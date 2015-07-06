@@ -76,7 +76,7 @@ var mysql = require('mysql');
 		});
 	};
 	
-	/*
+	/**
 	 * parse a entry to a readeable message(with username)
 	 * @param msg : a msg in form of a object 
 	 * @param 			{post_date: date(String),
@@ -98,8 +98,11 @@ var mysql = require('mysql');
 		+'SELECT login FROM FauchChatUser '
 		+'WHERE id=? ;',[post.post_user],function(err,rows){
 			if (err) throw err;
-			var msg={username: rows[0].login,
-				 message: post.post_content};
+			if(rows[0]){
+				var msg={username: rows[0].login,
+					message: post.post_content};
+			}
+			else msg={};
 			whatToDo(msg);
 			mySQLConnection.end();
 		});
