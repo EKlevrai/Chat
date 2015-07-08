@@ -5,7 +5,6 @@ var socket = io();
 
 function start(connectionID,userID){
 	socket.emit('login_session', { uid : userID , cid : connectionID });
-	console.log('ma bite')
 }
 
 
@@ -39,6 +38,8 @@ function sendMessage () {
 //Whenever the server emits 'login', log the login message
 socket.on('login_success', function (data) {
 	var message = "Welcome to Socket.IO Chat � ";
+	console.log("dAZDAZZAD");
+	console.log(data);
 	connected = true;
 	navbarConnected(data.username);
 	setRooms(data.rooms);

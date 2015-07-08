@@ -15,6 +15,8 @@
   <div class="page-content content-login">
     <h1>Log-in</h1><br>
     <% if(message && message.success){%><%=message.success%><%}%>
+    <% if(message && message.error){%><%=message.error%><%}%>
+    <% if(message && message.warning){%><%=message.warning%><%}%>
   <form action="login" method="post">
     <input type="text" name="user" placeholder="Username">
     <input type="password" name="pass" placeholder="Password">

@@ -9,32 +9,16 @@ var session = require('express-session');//
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');//NOT USED
 var io = require('socket.io')(server);
-var LdapAuth = require('ldapauth');
 
 
-var chatManager=require('./libs/chatManager.js');
+var chatMessage=require('./libs/chatMessage.js');
+var chatConnect=require('./libs/chatConnect.js');
+var chatLogin=require('./libs/chatLogin.js');
 var chatSQL=require('./libs/chatSQL.js');
 var chatSession=require('./libs/sessionID.js');
 
-var config = {
-  ldap: {
-    url: "ldap://192.168.42.60:389",
-    adminDn: "cn=admin,dc=reactor,dc=lan",
-    adminPassword: "root",
-    searchBase: "dc=reactor,dc=lan",
-    searchFilter: "(uid={{username}})"
-  }
-};
 
-var ldap = new LdapAuth({
-  url: config.ldap.url,
-  adminDn: config.ldap.adminDn,
-  adminPassword: config.ldap.adminPassword,
-  searchBase: config.ldap.searchBase,
-  searchFilter: config.ldap.searchFilter,
-  //log4js: require('log4js'),
-  cache: true
-});
+
 
 
 function clientSocket(roomId, namespace) {
@@ -64,6 +48,12 @@ global.mysql_user='root';
 global.mysql_password='root';
 /**the DB*/
 global.mysql_database='FauchChat';
+/**put the LDAP host */
+global.ldap_host='192.168.42.60';
+/**put the LDAP port */
+global.ldap_port='389';
+/** the type of data storage */
+global.datastorage='LDAP';
 
 //all environments
 app.set('port', process.env.PORT || 3000);
@@ -107,18 +97,16 @@ app.get("/login",function(req, res, next){
 });
 
 app.post("/login",function(req,res,next){
-		ldap.authenticate(req.body.user,req.body.pass, function (err, user) {
-		if (err) {
-				console.log("LDAP auth error: %s", err);
+	chatLogin.login({user : req.body.user,key :req.body.pass},
+	function(connectInfo){
+		if(connectInfo.isConnected){
+		var new_SID= Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 45);
+		chatSession.add(new_SID,connectInfo.uid,function(){
+			req.session.fauchChat={sid : new_SID};		
+			res.redirect("/chat");
+		});
 		}
-		else{//la connexion a eu lieu 
-			console.log(user);
-			var new_SID= Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 45);
-			chatSession.add(new_SID,user.uidNumber,function(){
-				req.session.fauchChat={sid : new_SID};		
-				res.redirect("/chat");	
-			});
-		}
+		else{res.render('login.ejs',{message : { error : connectInfo.error }});}
 	});
 });
 
@@ -186,15 +174,15 @@ io.on('connection', function (socket) {
 	socket.uid = undefined;
 	socket.username = undefined;
 	// when the client emits 'new message', this listens and executes
-	socket.on('new message', function(data){chatManager.newMessage(data,clientSocket(),socket);});
+	socket.on('new message', function(data){chatMessage.newMessage(data,clientSocket(),socket);});
 
-	socket.on('login',function(item){chatManager.login(item,clientSocket(),socket)});//DEPRECATED
+	socket.on('login',function(item){chatLogin.login(item,clientSocket(),socket)});//DEPRECATED
 
-	socket.on('login_session',function(item){chatManager.connect(item,clientSocket(),socket);});
+	socket.on('login_session',function(item){chatConnect.connect(item,clientSocket(),socket);});
 
-	socket.on('log_out',function(){chatManager.logout(clientSocket(),socket)});
+	socket.on('log_out',function(){chatLogin.logout(clientSocket(),socket)});
 });
 
 process.on('uncaughtException', function (error) {
-   console.log(error.stack);
+   console.log("c'est une belle errreur" +error.stack + error.toString());
 });

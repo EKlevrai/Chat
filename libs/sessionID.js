@@ -1,6 +1,6 @@
 module.paths.push('/usr/local/lib/node_modules');
 var chatSQL=require('./chatSQL.js');
-var chatLog=require('./chatLog.js');
+var chatHistory=require('./chatHistory.js');
 var mysql = require('mysql');
 
 /** Session ID :  can be usefull to
@@ -37,8 +37,7 @@ var mysql = require('mysql');
 				}
 				else {
 					if(rows.length<1){
-						console.log("bibite");
-						throw new Error("no entry found");
+						throw new Error("no entry found", "sessionID.js", 40);
 					}
 					else{
 						throw "too much entry found";

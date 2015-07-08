@@ -98,11 +98,11 @@ var mysql = require('mysql');
 				});
 	};
 	/** get all details on the rooms the user is linked to
-	 * @param uid : the id of the user
+	 * @param rid : array of the id of the rooms linked to user user
 	 * @param whatTodo : the callback function after we got the list of ids fct([{rooms_id,rooms_name, rooms_admin}])
 	 */
-	var roomDetailed=  function(uid,whatToDo) {
-		roomForPeople(uid,function(rooms_id){
+	var roomDetailed=  function(rid,whatToDo) {
+		if (rid.length!=0){
 			var rooms=[];
 			var mySQLConnection = mysql.createConnection({
 				host     : global.mysql_host,
@@ -112,15 +112,15 @@ var mysql = require('mysql');
 			});
 			mySQLConnection.query(''
 				+'SELECT `id`,`display_name`,`id_admin` FROM `FauchChatRoom` '
-				+'WHERE `id` IN (?) ;',[rooms_id],
+				+'WHERE `id` IN (?) ;',[rid],
 				function(err, rows, fields) {
 					mySQLConnection.end();
 					if (err) throw err;
 					rows.forEach(function(entry){rooms.push(entry);});
 					whatToDo(rooms);
-				}
-			);				
-		});
+				});
+		}
+		else whatToDo([]);				
 	};
 	
 	
@@ -133,7 +133,6 @@ var mysql = require('mysql');
 	var peopleForPeople = function(uid,whatToDo){
 		roomForPeople(uid,function(rooms){
 			peopleInRoom(rooms,function(users){
-				//console.log(users);
 				whatToDo(users);
 			});
 		})
@@ -168,7 +167,7 @@ var mysql = require('mysql');
 					whatToDo(rows[0]);
 				}
 				else {if(rows.length<1){
-						throw "no entry found";
+						throw new Error("no entry found", "chatSQL.js", 170);
 					}
 					else{
 						throw "too much entry found";

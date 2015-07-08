@@ -1,6 +1,7 @@
 module.paths.push('/usr/local/lib/node_modules');
 var mysql = require('mysql');
-
+var chatLDAP=require('./chatLDAP.js');
+var chatSQL=require('./chatSQL.js');
 (function() {
 
 	/**
@@ -88,25 +89,34 @@ var mysql = require('mysql');
 	 * @return			 post_user: int}
 	 */
 	var parseToMessage = function(post,whatToDo){
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
-		mySQLConnection.query(''
-		+'SELECT login FROM FauchChatUser '
-		+'WHERE id=? ;',[post.post_user],function(err,rows){
-			if (err) throw err;
-			if(rows[0]){
-				var msg={username: rows[0].login,
-					message: post.post_content};
-			}
-			else msg={};
+		if(global.datastorage=='SQL'){
+			parseToMessageSQL(post,whatToDo);
+		}
+		else{
+			parseToMessageLDAP(post,whatToDo);
+		}
+	};
+
+	var parseToMessageSQL = function(post,whatToDo){
+		chatSQL.uInfo(post.user,['login'],function(a){
+			var msg={username: a.login,
+					message: post.post_content
+				}
 			whatToDo(msg);
-			mySQLConnection.end();
+
 		});
 	};
+	
+	
+	var parseToMessageLDAP = function(post,whatToDo){
+		chatLDAP.uInfo({"uidNumber":post.post_user},['login'],function(a){
+			var msg={username: a.login,
+					message: post.post_content
+				}
+			whatToDo(msg);
+		});
+	};
+
 	module.exports.postHistory = function(user_id,room_id,message) {return postHistory(user_id,room_id,message); }
 	module.exports.getHistory = function(room_id,whatToDo) {return getHistory(room_id,whatToDo); }
 	module.exports.parseToMessage = function(post,whatToDo) {return parseToMessage(post,whatToDo); }
