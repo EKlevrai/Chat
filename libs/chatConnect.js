@@ -62,7 +62,7 @@ var chatConnectCallback=require('./chatConnectCallback.js');
 	};
 	
 	
-	module.exports.connect = function(data,connectedUsers,sckt) {if(global.datastore=="SQL")return connectSQL(data,connectedUsers,sckt);
+	module.exports.connect = function(data,connectedUsers,sckt) {if(global.config.datatype=="SQL")return connectSQL(data,connectedUsers,sckt);
 																else return connectLDAP(data,connectedUsers,sckt);}
 
 }());

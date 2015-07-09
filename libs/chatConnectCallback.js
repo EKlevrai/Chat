@@ -33,7 +33,6 @@ var chatHistory=require('./chatHistory.js');
 			chatSQL.linkPeople(sckt.uid,function(rid){
 				chatSQL.detailRoom(rid,function(rooms){
 				//log to the user its loggin and its rooms
-					console.log("connectInfo : "+JSON.stringify(connectInfo)+" ");
 					sckt.emit('login_success', {
 						username : connectInfo.username,
 						rooms : rooms
@@ -75,9 +74,8 @@ var chatHistory=require('./chatHistory.js');
 			sckt.username = connectInfo.username;
 			// add the client's username to the global list
 			chatLDAP.linkPeople(sckt.username,function(rid){
-				chatSQL.detailRoom(rid,function(rooms){
+				chatLDAP.detailRoom(rid,function(rooms){
 				//log to the user its loggin and its rooms
-					console.log("connectInfo : "+JSON.stringify(connectInfo)+" ");
 					sckt.emit('login_success', {
 						username : connectInfo.username,
 						rooms : rooms
@@ -109,11 +107,11 @@ var chatHistory=require('./chatHistory.js');
 	 * @param connectedUsers : the sockets of the allready connected users
 	 */ 
 	var announceLogged=function(sckt,connectedUsers){
-		if(global.datastorage=="SQL"){
+		if(global.config.datatype=="SQL"){
 			chatSQL.linkContact(sckt.uid,function(u){announceLoggedCallback(u,sckt,connectedUsers);});
 		}
 		else{
-			chatLDAP.linkContact(sckt.username,function(u){announceLoggedCallback(u,sckt,connectedUsers);});
+			chatLDAP.linkContact(sckt.username,function(u){console.log("users are"+u.toString());announceLoggedCallback(u,sckt,connectedUsers);});
 		}
 	};
 	/**
@@ -123,17 +121,16 @@ var chatHistory=require('./chatHistory.js');
 	 * @param connectedUsers : the sockets of the allready connected users
 	 */ 
 	var announceLoggedCallback =function(users,sckt,connectedUsers){
-		console.log(users);
-/*		users.forEach(function(entry){
+		users.forEach(function(entry){
 			connectedUsers.forEach(function(e2){
 				console.log("e1 "+JSON.stringify(entry));
-				console.log("e2 "+e2.toString());
+				console.log("e2 "+e2[0]);
 				if(entry!=sckt.username && entry.username==e2.username)
 					e2.emit('user joined', {
 						username: sckt.username
 					});
 			});
-		});*/
+		});
 	};
 
 
@@ -147,8 +144,8 @@ var chatHistory=require('./chatHistory.js');
 	
 
 	module.exports.recover = function(cu,ci,s) {
-		if (global.datastorage=='SQL')return recoverSQL(cu,ci,s);
-		if (global.datastorage=='LDAP')return recoverLDAP(cu,ci,s);
+		if (global.config.datatype=='SQL')return recoverSQL(cu,ci,s);
+		if (global.config.datatype=='LDAP')return recoverLDAP(cu,ci,s);
 	};
 	module.exports.announceLogged = function(s,cu) {return announceLogged(s,cu); };
 	

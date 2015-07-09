@@ -50,18 +50,8 @@ var chatConnectCallback=require('./chatConnectCallback.js');
 
 
 	module.exports.login = function(d,w) {
-		if(global.datastorage=='SQL')return logInSQL(d,w);
-		if(global.datastorage=='LDAP')return logInLDAP(d,w);
+		if(global.config.datatype=='SQL')return logInSQL(d,w);
+		if(global.config.datatype=='LDAP')return logInLDAP(d,w);
 		 };
 	module.exports.logout = function(connectedUsers,sckt) {return logOut(connectedUsers,sckt); };
-	
-	
-	/**
-	 * HIDDEN  :: accessible only here
-	 * react to a wrong login/passwd/connexionID
-	 * @param sckt : the socket of the "connected" user
-	 */ 
-	var logFail=function(sckt){
-		if(sckt!=undefined)sckt.emit("logFail");
-	};
 }());

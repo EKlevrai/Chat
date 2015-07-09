@@ -4,7 +4,7 @@ var ldap = require('ldapjs');
 (function() {
 
 	var client = ldap.createClient({
-		url: 'ldap://192.168.42.60:389'
+		url: 'ldap://'+global.config.LDAP.host+':'+global.config.LDAP.port+''
 	});
 	
 	/**
@@ -59,7 +59,9 @@ var ldap = require('ldapjs');
 		if(room && room!=""){
 			client.search('ou=groups,dc=reactor,dc=lan', opts, function(err, res) {
 			  res.on('searchEntry', function(entry) {
-				users_id.push(entry.memberUid);
+//console.log("new contact : "+ JSON.stringify(entry));
+//console.log("new contact : "+ entry.toString());
+				users_id=entry.attributes[0].vals;
 			  });
 			  res.on('searchReference', function(referral) {
 				console.log('referral: ' + referral.uris.join());
@@ -69,7 +71,7 @@ var ldap = require('ldapjs');
 				whatToDo(users_id);
 			  });
 			  res.on('end', function(result) {
-				console.log('status: ' + result.status);
+				if (result.status!=0)console.log('status: ' + result.status);
 				whatToDo(users_id);
 			  });
 			});
@@ -102,14 +104,49 @@ var ldap = require('ldapjs');
 				whatToDo(id_rooms);
 			});
 			res.on('end', function(result) {
-				console.log('status: ' + result.status);
-				console.log("roomsID"+id_rooms);
+				if (result.status!=0)console.log('status: ' + result.status);
 				whatToDo(id_rooms);
 			});
 		});
 	};
 
+	/** get all details on the rooms the user is linked to
+	 * @param rid : array of the id of the rooms linked to user user
+	 * @param whatTodo : the callback function after we got the list of ids fct([{id,display_name, rooms_admin}])
+	 */
+	var roomDetailed=  function(rid,whatToDo) {
+		var attr=['cn']
+		if (rid.length>1){console.log("attention, le chatLDAP.detailRoom va pas trop marcher, vu qu'il y a plus d'un élément à rid");}
+		var data=[];
+		rid.forEach(function(e){
+			var opts = {
+				"filter": '(gidNumber='+e+')',
+				scope: 'one',
+				"attributes" : attr
+			};
+			client.search('ou=groups,dc=reactor,dc=lan', opts, function(err, res) {
+				res.on('searchEntry', function(entry) {
+					data.push({ "id" :  e, "display_name" : entry.attributes[0].vals[0]});			
+				});
+				res.on('searchReference', function(referral) {
+					console.log('referral: ' + referral.uris.join());
+				});
+				res.on('error', function(err) {
+					console.error('error: ' + err.message);
+				});
+				res.on('end', function(result) {
+					if (result.status!=0)console.log('status: ' + result.status);
+					if(data.length==rid.length){
+					//ici, la derniere partie de la recherche dans la  boucle forEach s'est executée : on envoie donc le callback
+					//sinon on continue 
+								whatToDo(data);	
+					}
+				});
+			});
+		});
 
+	};			
+	
 	
 	
 	/**
@@ -118,8 +155,11 @@ var ldap = require('ldapjs');
 	 * @param whatToDo : callback function fct ([users_ids])
 	 */
 	var peopleForPeople = function(uname,whatToDo){
+console.log("find contact of : "+uname )
 		roomForPeople(uname,function(rooms){
+console.log("find people of room : "+rooms )
 			peopleInRoom(rooms,function(users){
+console.log("users are : "+users )
 				whatToDo(users);
 			});
 		})
@@ -180,7 +220,7 @@ var ldap = require('ldapjs');
 				console.error('error: ' + err.message);
 			});
 			res.on('end', function(result) {
-				console.log('status: ' + result.status);
+				if (result.status!=0)console.log('status: ' + result.status);
 				whatToDo(data);
 			});
 		});
@@ -188,6 +228,7 @@ var ldap = require('ldapjs');
 	
 	module.exports.connectUser = function(uname,k,w) {return connectUser(uname,k,w); }
 	module.exports.linkRoom = function(room,whatToDo) {return peopleInRoom(room,whatToDo); }
+	module.exports.detailRoom = function(uid,whatToDo) {return roomDetailed(uid,whatToDo); }
 	module.exports.linkPeople = function(uname,whatToDo) {return roomForPeople(uname,whatToDo); }
 	module.exports.linkContact = function(uname,whatToDo) {return peopleForPeople(uname,whatToDo); }
 	module.exports.inCommon = function(uid1,uid2) {return isInCommon(uid1,uid2); }

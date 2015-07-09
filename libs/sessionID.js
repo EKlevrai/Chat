@@ -17,12 +17,7 @@ var mysql = require('mysql');
 	 * @param whatToDo : the callback to do with the userId fct(uid) 
 	 * */
 	var getUid = function(sid,whatToDo){
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		//query our trouver les sessions en fonction de l'id
 		mySQLConnection.query(''
 			+'SELECT id_user FROM FauchChatSessionId '
@@ -52,12 +47,7 @@ var mysql = require('mysql');
 	 * @param whatToDo : the callback to do with the userId fct() 
 	 * */ 
 	var add = function (sid, uid,whatToDo){
-			var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+			var mySQLConnection = mysql.createConnection(global.config.SQL);
 		//query our trouver les sessions en fonction de l'id
 		mySQLConnection.query(''
 			+' INSERT INTO `FauchChatSessionId`(`id_user`,`session_id`,last_use) '
@@ -70,12 +60,7 @@ var mysql = require('mysql');
 		};
 	
 	var rm =function(sid,uid){
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		//query our trouver les sessions en fonction de l'id
 		mySQLConnection.query(''
 			+' DELETE FROM `FauchChatSessionId` '

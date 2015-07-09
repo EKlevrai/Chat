@@ -9,13 +9,18 @@ var session = require('express-session');//
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');//NOT USED
 var io = require('socket.io')(server);
+var fs = require('fs');
+var ini = require('ini');
 
+global.config = ini.parse(fs.readFileSync('./properties.conf', 'utf-8'))
 
-var chatMessage=require('./libs/chatMessage.js');
-var chatConnect=require('./libs/chatConnect.js');
-var chatLogin=require('./libs/chatLogin.js');
-var chatSQL=require('./libs/chatSQL.js');
-var chatSession=require('./libs/sessionID.js');
+//ici commence le code propre
+
+var chatMessage=require(global.config.paths.libs+'/chatMessage.js');
+var chatConnect=require(global.config.paths.libs+'/chatConnect.js');
+var chatLogin=require(global.config.paths.libs+'/chatLogin.js');
+var chatSQL=require(global.config.paths.libs+'/chatSQL.js');
+var chatSession=require(global.config.paths.libs+'/sessionID.js');
 
 
 
@@ -40,24 +45,9 @@ function clientSocket(roomId, namespace) {
 	    return res;
 	}
 
-/**put the host */
-global.mysql_host='localhost';
-/**the user */
-global.mysql_user='root';
-/**put the password */
-global.mysql_password='root';
-/**the DB*/
-global.mysql_database='FauchChat';
-/**put the LDAP host */
-global.ldap_host='192.168.42.60';
-/**put the LDAP port */
-global.ldap_port='389';
-/** the type of data storage */
-global.datastorage='LDAP';
-
 //all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + global.config.paths.templates);
 app.set('view engine', 'ejs');
 
 /*app.use(morgan('combined'), {
@@ -66,7 +56,7 @@ app.set('view engine', 'ejs');
 app.use(cookieParser());
 
 app.use(
-	session({secret: '1234567890QWERTY',
+	session({secret: global.config.session.secret,
 		saveUninitialized : false,
 		resave : false
 	})
@@ -74,7 +64,7 @@ app.use(
 
 app.use(bodyParser());
 //app.use(express.methodOverride());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + global.config.paths.frontendFiles));
 
 app.get("/login",function(req, res, next){
 	if (req.session.fauchChat && req.session.fauchChat.sid){ 

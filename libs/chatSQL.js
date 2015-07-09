@@ -21,12 +21,7 @@ var mysql = require('mysql');
 	 */
 	var connectUser = function(username,key,whatToDo){
 		var connectInfo={};
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		/*On genere la query à partir des infos*/
 		mySQLConnection.query(''
 			+'SELECT * FROM FauchChatUser '
@@ -57,12 +52,7 @@ var mysql = require('mysql');
 	 */
 	var peopleInRoom =  function(room,whatToDo) {
 		var users_id=[];
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		mySQLConnection.query(''
 				+'SELECT `id_user` FROM `FauchChatInRoom` '
 				+'WHERE `id_room` IN (?) ;',[room],
@@ -81,12 +71,7 @@ var mysql = require('mysql');
 	 */
 	var  roomForPeople =  function(uid,whatToDo) {
 		var rooms_id=[];
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		mySQLConnection.query(''
 				+'SELECT `id_room` FROM `FauchChatInRoom` '
 				+'WHERE `id_user` IN (?) ;',[uid],
@@ -104,12 +89,7 @@ var mysql = require('mysql');
 	var roomDetailed=  function(rid,whatToDo) {
 		if (rid.length!=0){
 			var rooms=[];
-			var mySQLConnection = mysql.createConnection({
-				host     : global.mysql_host,
-				user     : global.mysql_user,
-				password : global.mysql_password,
-				database : global.mysql_database
-			});
+			var mySQLConnection = mysql.createConnection(global.config.SQL);
 			mySQLConnection.query(''
 				+'SELECT `id`,`display_name`,`id_admin` FROM `FauchChatRoom` '
 				+'WHERE `id` IN (?) ;',[rid],
@@ -146,12 +126,7 @@ var mysql = require('mysql');
 	 * @param whatToDo callback function fct({arg1 : r1 ,...})
 	 */
 	 var uInfo = function(uid,args,whatToDo){
-		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
-		});
+		var mySQLConnection = mysql.createConnection(global.config.SQL);
 		/*On genere la query à partir des infos*/
 		mySQLConnection.query(''
 			+'SELECT '

@@ -14,16 +14,16 @@ var chatSQL=require('./chatSQL.js');
 	 */
 	var postHistory = function(user_id,data){
 		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
+			host     : global.config.SQL.host,
+			user     : global.config.SQL.user,
+			password : global.config.SQL.password,
+			database : global.config.SQL.database
 		});
 		handleOverFlowHistory(mySQLConnection,data);
 
 		/*On genere la query à partir des infos*/
 		mySQLConnection.query(''
-			+'INSERT INTO FauchChatHistory '
+			+'INSERT INTO '+global.config.SQL.prefix+'History '
 			+'(post_date,post_content,id_room,post_user) '
 			+'VALUES (?,?,?,?);',
 			[new Date().getTime().toString(),data.txt,data.rid ,user_id],
@@ -62,10 +62,10 @@ var chatSQL=require('./chatSQL.js');
 	 */
 	var getHistory = function(room_id,whatTodo){
 		var mySQLConnection = mysql.createConnection({
-			host     : global.mysql_host,
-			user     : global.mysql_user,
-			password : global.mysql_password,
-			database : global.mysql_database
+			host     : global.config.SQL.host,
+			user     : global.config.SQL.user,
+			password : global.config.SQL.password,
+			database : global.config.SQL.database
 		});
 		mySQLConnection.query(''
 		+'SELECT post_date,post_user,post_content FROM FauchChatHistory '
@@ -89,7 +89,7 @@ var chatSQL=require('./chatSQL.js');
 	 * @return			 post_user: int}
 	 */
 	var parseToMessage = function(post,whatToDo){
-		if(global.datastorage=='SQL'){
+		if(global.config.datatype=='SQL'){
 			parseToMessageSQL(post,whatToDo);
 		}
 		else{
