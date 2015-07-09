@@ -43,12 +43,12 @@ var chatSQL=require('./chatSQL.js');
 		+'WHERE id_room=? ;',[data.rid],function(err,rows){
 
 			if (err) throw err;
-			if (rows[0].nombre_msg>=30){
+			if (rows[0].nombre_msg>=global.config.datastorage.maxmessage){
 				mySQLConnection.query(''
 				+'DELETE FROM FauchChatHistory '
 				+'WHERE id_room=? '
 				+'ORDER BY post_date ASC limit ?;'
-					,[data.rid,rows[0].nombre_msg-29]
+					,[data.rid,rows[0].nombre_msg-global.config.datastorage.maxmessage+1]
 					,function(err2){
 						if (err2) throw err2;
 				});
