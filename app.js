@@ -21,29 +21,10 @@ var chatConnect=require(global.config.paths.libs+'/chatConnect.js');
 var chatLogin=require(global.config.paths.libs+'/chatLogin.js');
 var chatSQL=require(global.config.paths.libs+'/chatSQL.js');
 var chatSession=require(global.config.paths.libs+'/sessionID.js');
+var chatSession=require(global.config.paths.libs+'/sessionID.js');
+var socketManager = require(global.config.paths.libs+'/socketManager.js')(io)
 
 
-
-
-
-function clientSocket(roomId, namespace) {
-	    var res = [];
-	    var ns = io.of(namespace ||"/");    // the default namespace is "/"
-
-	    if (ns) {
-	        for (var id in ns.connected) {
-	            if(roomId) {
-	                var index = ns.connected[id].rooms.indexOf(roomId) ;
-	                if(index !== -1) {
-	                    res.push(ns.connected[id]);
-	                }
-	            } else {
-	                res.push(ns.connected[id]);
-	            }
-	        }
-	    }
-	    return res;
-	}
 
 //all environments
 app.set('port', process.env.PORT || 3000);
@@ -148,30 +129,12 @@ app.use(function(req, res, next){
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
 	});
-var usernames = {};
-var numUsers = 0;
+
 
 
 /** Connexion avec le client */
 
-		
-io.use(function(socket, next){
-//unused middleware
-  next();
-});
-io.on('connection', function (socket) {
-	/** @var uid : (user id) l'identifiant de la personne connectée */
-	socket.uid = undefined;
-	socket.username = undefined;
-	// when the client emits 'new message', this listens and executes
-	socket.on('new message', function(data){chatMessage.newMessage(data,clientSocket(),socket);});
 
-	socket.on('login',function(item){chatLogin.login(item,clientSocket(),socket)});//DEPRECATED
-
-	socket.on('login_session',function(item){chatConnect.connect(item,clientSocket(),socket);});
-
-	socket.on('log_out',function(){chatLogin.logout(clientSocket(),socket)});
-});
 
 process.on('uncaughtException', function (error) {
    console.log("c'est une belle errreur" +error.stack + error.toString());
