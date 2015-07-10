@@ -50,3 +50,7 @@ div#message-panel{
 .messageField{
 flex : 1 1 0;
 }
+/*navbar*/
+.top-bar-section ul li > a {
+    font-size: 30px;
+}

@@ -1,6 +1,7 @@
- var chatMessage=require('.'+'/chatMessage.js');
-var chatConnect=require('.'+'/chatConnect.js');
-var chatLogin=require('.'+'/chatLogin.js');
+module.paths.push('/usr/local/lib/node_modules');
+var chatMessage=require('./chatMessage.js');
+var chatConnect=require('./chatConnect.js');
+var chatLogin=require('./chatLogin.js');
 /**
  * this is the file who groups all the middlewares linked to socket.io event 
  * 

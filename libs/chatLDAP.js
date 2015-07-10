@@ -1,6 +1,12 @@
 module.paths.push('/usr/local/lib/node_modules');
 var ldap = require('ldapjs');
-
+/**
+ * LIST OF PROBABLE ERRORS
+ *  #53 : unauthenticated bind (DN with no password) disallowed :no password entered before login. caused  by bind
+ * 
+ * 
+ * 
+ */ 
 (function() {
 
 	var client = ldap.createClient({
