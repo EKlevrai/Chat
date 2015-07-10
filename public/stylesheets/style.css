@@ -1,3 +1,5 @@
+@import url("/stylesheets/chatroom.css");
+
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -14,8 +16,8 @@ div#main-content{
 
 div#room-list{
 	border : 1px solid black;
-	width : 150pt;
-	min-height : 150pt;
+	width : 300px;
+	min-height : 400pt;
     overflow-x : hidden;
 }
 div.rooms{

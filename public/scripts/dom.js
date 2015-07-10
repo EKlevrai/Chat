@@ -48,40 +48,6 @@ function navbarDisconnected(){
 	loginForm.appendChild(inputSend);
 }
 
-/**
- * set the node of the room list
- * @param rooms the list of rooms
- */
-function setRooms(rooms){
-	var  roomNode = document.querySelector('#room-list>.rooms');
-	var  messagePanel = document.getElementById("message-panel");
-	// first we remove all child in the room-list
-	while (roomNode.firstChild) {
-		roomNode.removeChild(roomNode.firstChild);
-	}
-	while(messagePanel.children.length > 2){
-		messagePanel.removeChild(messagePanel.children[1]);
-	}
-	rooms.forEach(
-		function (entry){
-			var newRoomNode = document.createElement('button');
-			newRoomNode.innerHTML = entry.display_name;
-			newRoomNode.dataset.roomId = entry.id;
-			newRoomNode.onclick = function(){switchRoom(entry.id,entry.display_name);};
-			newRoomNode.className += " room" ;			
-			roomNode.appendChild(
-					document.createElement('div')
-					.appendChild(newRoomNode));
-			var newMessagePanel = document.createElement("div");
-			var newMessagePanelList = document.createElement("ul");
-			newMessagePanel.className += " chatArea";
-			newMessagePanel.id= "room"+entry.id;
-			newMessagePanelList.className += " messages messageField";
-			newMessagePanel.appendChild(newMessagePanelList)
-			messagePanel.insertBefore(newMessagePanel, document.getElementById("inputMessage"));
-	});
-	if(rooms.length)switchRoom(rooms[0].id,rooms[0].display_name);
-}
 
 var COLORS = [
 '#e21400', '#91580f', '#f8a700', '#f78b00',
@@ -91,13 +57,21 @@ var COLORS = [
 
 
 function switchRoom(id,display_name){
+	
+	if (typeof CURRENT_ROOM !== 'undefined') {	
+		document.getElementById("room-button"+CURRENT_ROOM).className = "room button-chat-link"; //we remove the room-selected class
+	}
+	
 	CURRENT_ROOM=id;
+	document.getElementById("room-button"+CURRENT_ROOM).className += " room-selected"; //we add the room-selected class
 	rooms = document.querySelectorAll('.chatArea');
 	for(var i = 0; i<rooms.length; i++){
 		rooms[i].style.display='none';
 	}
 	document.getElementById("room"+id).style.display = 'initial';
 	document.querySelector(".room-legend").innerHTML=display_name;
+	
+	
 };
 
 /**Adds a message element to the messages and scrolls to the bottom

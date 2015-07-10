@@ -1,0 +1,54 @@
+.button-chat-link{
+	margin-bottom : 0;
+	border-bottom : 1px solid #e8e8e8;
+	cursor:pointer;
+}
+.button-chat-link:hover {
+	background : #e5e5f1;
+}
+
+.room-selected {
+	background : #CCCCDA;
+}
+
+.room-image{
+float:left;
+}
+.room-text div{
+text-overflow: ellipsis;
+overflow:hidden; 
+}
+.room-title{
+height: 32px;
+line-height : 28px;
+font-size:20px;
+font-weight:600;
+text-overflow: ellipsis;
+overflow:hidden; 
+}
+.room-preview{
+height: 32px; text-overflow: ellipsis;overflow:hidden; 
+}
+.room-activity{
+float:right;
+line-height:28px;
+}
+.room-last-activity{
+color : #A6A6A6;
+}
+
+.room-message-count{
+	background: #B52D2D;
+	color:#FFFFFF;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight:600;
+    margin-top: 4px;
+    min-width: 21px;
+    padding: 5px;
+    text-align: center;
+}
+
+
+
+
