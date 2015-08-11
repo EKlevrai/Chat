@@ -29,7 +29,7 @@ var chatConnectCallback=require('./chatConnectCallback.js');
 								uid : data.uid,
 								username : args.login
 							}
-					chatConnectCallback.connect(connectedUsers,connectInfo,sckt);
+					chatConnectCallback.recoverCallback(connectedUsers,connectInfo,sckt);
 				});
 			}
 			else chatError.logFail(sckt);		
@@ -54,7 +54,7 @@ var chatConnectCallback=require('./chatConnectCallback.js');
 								uid : data.uid,
 								username : args.login
 							}
-					chatConnectCallback.recover(connectedUsers,connectInfo,sckt);
+					chatConnectCallback.recoverCallback(connectedUsers,connectInfo,sckt);
 				});
 			}
 			else chatError.logFail(sckt);		

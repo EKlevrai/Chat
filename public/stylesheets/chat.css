@@ -1,0 +1,17 @@
+
+.chatArea{
+	height : 400pt;	
+    overflow-y : visible;
+    overflow-x : hidden;
+}
+.inputMessage,.room-legend{
+	flex : 1 0 20px;
+}
+.room-legend{
+background : #F5E8F2;
+
+	border : 0px solid black;
+}
+.messageField{
+flex : 1 1 0;
+}

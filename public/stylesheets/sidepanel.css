@@ -1,24 +1,39 @@
-.button-chat-link{
+/**
+ * Stylesheet de tout le side panel left : 
+ * liste, icone, 
+ * 
+ * 
+ *
+ * chat : liste des chatrooms avec preview dernier message, messages non lus...	
+ * admin :  liste des users/groups, avec nb de user dans groups....
+ * 
+ * 
+ * 
+ * */
+
+
+.side-bar-link{
 	margin-bottom : 0;
 	border-bottom : 1px solid #e8e8e8;
 	cursor:pointer;
 }
-.button-chat-link:hover {
-	background : #e5e5f1;
+.side-bar-link:hover {
+	background : #FFF2FC;
 }
 
 .room-selected {
-	background : #CCCCDA;
+	background : #F5E8F2;
 }
 
-.room-image{
+.element-image{
 float:left;
 }
-.room-text div{
+.element-text div{
 text-overflow: ellipsis;
 overflow:hidden; 
+white-space: nowrap;
 }
-.room-title{
+.element-title{
 height: 32px;
 line-height : 28px;
 font-size:20px;
@@ -26,17 +41,18 @@ font-weight:600;
 text-overflow: ellipsis;
 overflow:hidden; 
 }
-.room-preview{
-height: 32px; text-overflow: ellipsis;overflow:hidden; 
+.element-preview{
+height: 32px; text-overflow: ellipsis;overflow:hidden;
+ 
 }
-.room-activity{
+.element-activity{
 float:right;
 line-height:28px;
 }
-.room-last-activity{
+.element-last-activity{
 color : #A6A6A6;
 }
-
+/**chat only */
 .room-message-count{
 	background: #B52D2D;
 	color:#FFFFFF;

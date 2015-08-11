@@ -1,56 +1,72 @@
-@import url("/stylesheets/chatroom.css");
+@import url("/stylesheets/sidepanel.css");
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-div#logs {
+div#logs {/*unused*/
 border : 1px solid black;
 }
 div#main-content{
-	border : 1px solid black;
+	border : 1px solid #e8e8e8;
 	display: flex;
 	flex-wrap: nowrap;
 	align_item : stretch;
 }
 
-div#room-list{
-	border : 1px solid black;
+.side-panel{
 	width : 300px;
 	min-height : 400pt;
     overflow-x : hidden;
 }
-div.rooms{
+div.side-panel-list{
 display : flex;
 flex-wrap: nowrap;
 flex-direction : column;
 }
 
 
-div#message-panel{
-	border : 1px solid black;
+.main-panel{
+	border-left : 1px solid #e8e8e8;
 	flex : 1;
 	min-height : 150pt;
 	max-height : 400pt;	
 	display : flex;
 	flex-direction:column;
 }
-.chatArea{
-	min-height : 150pt;
-	max-height : 400pt;	
-    overflow-y : visible;
-    overflow-x : hidden;
+
+
+
+/*loading panel*/
+.loading-panel{
+height : 100%;
+padding-top:45%;
 }
-.inputMessage,.room-legend{
-	flex : 1 0 20px;
+.loading-panel img{
+display: block;
+margin:auto;
 }
-.room-legend{
-	border : 1px solid black;
-}
-.messageField{
-flex : 1 1 0;
-}
+
+
+
 /*navbar*/
 .top-bar-section ul li > a {
-    font-size: 30px;
+    font-size: 14px;
+    padding: 0px !important;
+    text-align : left;
+}
+
+.top-bar-section ul li > a [class*="icon-"],
+.top-bar-section ul li > a [class^="icon-"]
+{
+    font-size: 22px;
+    padding: 0.9375rem;
+}
+
+.top-bar-section li:not(.has-form) a:hover label {
+background : #222;
+}
+.top-bar-section ul li > a:label{
+    font-size: 14px;
+    padding: 0px !important;
 }

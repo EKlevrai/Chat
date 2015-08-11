@@ -3,9 +3,9 @@
  * @param rooms the list of rooms
  */
 function setRooms(rooms){
-	var  roomNode = document.querySelector('#room-list>.rooms');
+	var  roomNode = document.querySelector('.side-panel>.side-panel-list');
 	var  messagePanel = document.getElementById("message-panel");
-	// first we remove all child in the room-list
+	// first we remove all child in the side-panel
 	while (roomNode.firstChild) {
 		roomNode.removeChild(roomNode.firstChild);
 	}
@@ -29,11 +29,11 @@ function nodeRoom(room,roomNode,messagePanel){
 	newRoomNode.dataset.roomId = room.id;
 	newRoomNode.id = "room-button"+room.id;
 	newRoomNode.onclick = function(){switchRoom(room.id,room.display_name);};
-	newRoomNode.className = "room button-chat-link" ;//main div of the roomnode is created, go for the image, the title, the preview and the alert(for new message)
+	newRoomNode.className = "room side-bar-link" ;//main div of the roomnode is created, go for the image, the title, the preview and the alert(for new message)
 	
 
 	var roomImage=document.createElement('div');
-	roomImage.className +="room-image";
+	roomImage.className +="element-image";
 	var image=document.createElement('img');
 	image.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNPygCSDF8PVmoNV2RMqvs-nGEKRqEBcbQzYAbQ31K742ibWVonQ";//image 64x64
 	roomImage.appendChild(image);
@@ -42,32 +42,27 @@ function nodeRoom(room,roomNode,messagePanel){
 
 	
 	var roomActivity=document.createElement('div');
-	roomActivity.className +="room-activity";
+	roomActivity.className +="element-activity";
 	var roomLastActivity=document.createElement('div');
 	roomLastActivity.appendChild(document.createTextNode("14:55"));
-	roomLastActivity.className +="room-last-activity";
+	roomLastActivity.className +="element-last-activity";
 	roomActivity.appendChild(roomLastActivity);
-	var roomNewMessage=document.createElement('div');
-	var roomNewMessageCount=document.createElement('span')
-	roomNewMessageCount.appendChild(document.createTextNode(10))
-	roomNewMessageCount.className +="room-message-count";
-	roomNewMessage.appendChild(roomNewMessageCount);
-	roomActivity.appendChild(roomNewMessageCount);
+	
 	newRoomNode.appendChild(roomActivity);
 	
 	var roomTextInfo=document.createElement('div');
-	roomTextInfo.className +="room-text";
+	roomTextInfo.className +="element-text";
 	var roomTitle=document.createElement('div');
 	roomTitle.appendChild(document.createTextNode("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"+ " ("+room.display_name+")"));
-	roomTitle.className +="room-title";
+	roomTitle.className +="element-title";
 	roomTextInfo.appendChild(roomTitle);
 	var roomPreview=document.createElement('div');
 	var roomPreviewAuthor=document.createElement('span');
-	roomPreviewAuthor.className +="room-preview-author";
+	roomPreviewAuthor.className +="element-preview-author";
 	roomPreviewAuthor.appendChild(document.createTextNode("Olivier : "));	
 	roomPreview.appendChild(roomPreviewAuthor);
 	roomPreview.appendChild(document.createTextNode("dazdazdazd"));
-	roomPreview.className +="room-preview";
+	roomPreview.className +="element-preview";
 	roomTextInfo.appendChild(roomPreview);
 	newRoomNode.appendChild(roomTextInfo);
 	roomNode.appendChild(newRoomNode);
@@ -81,4 +76,8 @@ function nodeRoom(room,roomNode,messagePanel){
 	newMessagePanel.appendChild(newMessagePanelList)
 	messagePanel.insertBefore(newMessagePanel, document.getElementById("inputMessage"));
 }
+
+
+
+
 

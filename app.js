@@ -28,9 +28,7 @@ var expressManager = require(global.config.paths.libs+'/expressManager.js')
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + global.config.paths.templates);
 app.set('view engine', 'ejs');
-/*app.use(morgan('combined'), {
-  skip: function (req, res) { return (req.originalUrl.match(new RegExp(/\/[a-z]+\.[a-z]+$/))); }
-	});*/
+
 app.use(cookieParser());
 app.use(
 	session({secret: global.config.session.secret,
@@ -51,7 +49,7 @@ expressManager(app);
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
-	});
+});
 
 
 process.on('uncaughtException', function (error) {

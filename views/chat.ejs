@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="/stylesheets/background.css">
 <link rel="stylesheet" href="/stylesheets/style.css">
 <link rel="stylesheet" href="/stylesheets/font.css">
-<link rel="stylesheet" href="/stylesheets/hooks.foundation.css">
+<link rel="stylesheet" href="/stylesheets/chat.css">
 <script src="/scripts/socket.io.js"></script>
+<script src="/scripts/global.js"></script>
 <script src="/scripts/domNodeCreator.js"></script>
 <script src="/scripts/domText.js"></script>
 <script src="/scripts/dom.js"></script>
@@ -23,42 +24,39 @@
 		<ul class="left">
 			<li class="divider"></li>
 			<li class="has-dropdown">
-				<a class="active" href="#"><span class="icon-chat"></span></a>
+				<a class="active" href="#"><span class="icon icon-chat"></span></a>
 				<ul class="dropdown">
 					<li><label>Your services</label></li>
-					<li><a href="#">Git</a></li>
-					<li><a href="#">Files</a></li>
+					<li><a href="#"><span class="icon-git"></span>Git</a></li>
+					<li><a href="#"><span class="icon-admin"></span>Admin</a></li>
 					<li class="divider"></li>
-                	<li><label>Others Services</label></li>
-                	<li><a href="#">Compta</a></li>
-                	<li><a href="#">Clients</a></li>
+                	<li><a href="#"><label>Others Services</label></a></li>
+					<li><a href="#"><span class="icon-files"></span>Files</a></li>
+                	<li><a href="#"><span class="icon-clients"></span>Clients</a></li>
                		<li class="divider"></li>
-                	<li><a href="#">Tout les services...</a></li>
             	</ul>
             </li>
             <li class="divider"></li>
-          	<li><a href="#">Settings</a></li>
+          	<li><a href="#"><span class="icon icon-settings"></span></a></li>
 		</ul>
 		<ul class="right menu-logs">
             		<li class="divider"></li>
 					<li><a>Connecting</a></li>
             		<li class="divider"></li>
-					<li><a class="logout-button" href="/logout"><span class="icon-logout"></span></a></li>
+					<li><a class="logout-button" href="/logout"><span class="icon icon-logout"></span></a></li>
         </ul>
 	</section>
 </nav>
 <div class="page-content">
 	<!--<div class="row">-->
 	<div id="main-content">
-		<div class="left-panel" id="room-list"> <!--class="large-3 columns"-->
-			<div class="rooms">
+		<div class="left-panel side-panel" id=""> <!--class="large-3 columns"-->
+			<div class="side-panel-list">
 			</div>
 		</div>
 		<div class="main-panel" id="message-panel"><!--large-9 columns-->
 			<div class="room-legend">please connect</div>
-			<div class="chatArea" id="room0">
-				<ul class="messages messageField"></ul>
-			</div>
+			<div class="loading-panel"><img src="/svg/loading.svg"/></div>
 			<input class="inputMessage" id="inputMessage" placeholder="Type here..."/>
 		</div>
 	</div>

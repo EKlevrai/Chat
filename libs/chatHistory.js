@@ -55,7 +55,7 @@ var chatSQL=require('./chatSQL.js');
 			}
 		});
 	};
-	/*
+	/**
 	 * request the history of the last messages logged in the room, and execute a callback to do with them
 	 * @param room_id :the id of the room where the messages are requested
 	 * @param whatToDo : the callback function to do with the datas fct(msgs)
@@ -68,7 +68,7 @@ var chatSQL=require('./chatSQL.js');
 			database : global.config.SQL.database
 		});
 		mySQLConnection.query(''
-		+'SELECT post_date,post_user,post_content FROM FauchChatHistory '
+		+'SELECT post_date,post_user,post_content FROM '+global.config.SQL.prefix+'History '
 		+'WHERE id_room=? '
 		+'ORDER BY post_date ASC;',[room_id],function(err,rows){
 			if (err) throw err;
@@ -107,7 +107,6 @@ var chatSQL=require('./chatSQL.js');
 		});
 	};
 	
-	
 	var parseToMessageLDAP = function(post,whatToDo){
 		chatLDAP.uInfo({"uidNumber":post.post_user},['login'],function(a){
 			var msg={username: a.login,
@@ -117,8 +116,71 @@ var chatSQL=require('./chatSQL.js');
 		});
 	};
 
+
+	/**
+	 * Mark the chatroom as read at the date moment
+	 * @param :  uid :  the userId number
+	 * @param : rid : the roomId numer
+	 * @param : date : the date of the new "last seen" value
+	 * 
+	 */
+	var markAsRead = function(uid,rid,date){
+		var mySQLConnection = mysql.createConnection({
+			host     : global.config.SQL.host,
+			user     : global.config.SQL.user,
+			password : global.config.SQL.password,
+			database : global.config.SQL.database
+		});
+		mySQLConnection.query(''
+			+'UPDATE '+global.config.SQL.prefix+'InRoom '
+			+'SET last_seen=? '
+			+'WHERE id_user=? '
+			+'AND id_room=?;',
+			[date,uid,rid],
+			function(err) {
+				mySQLConnection.end();
+				if (err) throw err;
+		});
+	};
+	
+	/**
+	 * Count the number of messages since the last seen by the user
+	 * @param : uid : the userId number of the user we want to know how many message he missed
+	 * @param : rid :  the roomId number of the room we want to know how many messages the user missed
+	 * @param : whatToDo :  the callback to execute when we get the count, fct(count)
+	 * */
+	var countUnRead = function(uid,rid,whatTodo){
+		var mySQLConnection = mysql.createConnection({
+			host     : global.config.SQL.host,
+			user     : global.config.SQL.user,
+			password : global.config.SQL.password,
+			database : global.config.SQL.database
+		});
+		//first we get the "last seen" value for the user and room specified
+		mySQLConnection.query(''
+		+'SELECT last_seen '
+		+'FROM '+global.config.SQL.prefix+'InRoom '
+		+'WHERE id_room=? '
+		+'AND id_user=?;',[rid,uid],function(err,rows){
+			if (err) throw err;
+			//then, with the last seen value, we count the post who has occured after the last seen
+			mySQLConnection.query(''
+			+'SELECT count(*) AS number '
+			+'FROM '+global.config.SQL.prefix+'History '
+			+'WHERE id_room=? '
+			+'AND post_date > ? ;',[rid,rows[0]],function(err2,rows2){
+				if (err2) throw err2;
+				whatTodo(rows2[0].number);
+				mySQLConnection.end();
+			});
+		
+		});
+	};
+
 	module.exports.postHistory = function(user_id,room_id,message) {return postHistory(user_id,room_id,message); }
 	module.exports.getHistory = function(room_id,whatToDo) {return getHistory(room_id,whatToDo); }
-	module.exports.parseToMessage = function(post,whatToDo) {return parseToMessage(post,whatToDo); }
-	module.exports.handleOverFlowHistory = function(MySQLConnection,data){return handleOverFlowHistory(MySQLConnection,data);};
+	module.exports.parseToMessage = function(p,w) {return parseToMessage(p,w); }
+	module.exports.handleOverFlowHistory = function(MySQLConnection,d){return handleOverFlowHistory(MySQLConnection,d);};
+	module.exports.markAsRead = function(u,r,d){return markAsRead(u,r,d);};
+	module.exports.countUnRead = function(u,r,w){return countUnRead(u,r,w);};
 })();

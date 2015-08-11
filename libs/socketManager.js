@@ -46,7 +46,10 @@ exports = module.exports = function(io){
 		 * 				txt : the content of the message (string),
 		 *				rid : the id of the room targeted to send the message (int)
 		 */
-		socket.on('new message', function(data){chatMessage.newMessage(data,clientSocket(),socket);});
+		socket.on('new message', function(data){
+			chatMessage.newMessage(data,clientSocket(),socket);
+			chatHistory.markAsRead(socket.uid,data.rid,new Date().toString());
+		});
 
 
 		/**

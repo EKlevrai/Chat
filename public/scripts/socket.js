@@ -25,7 +25,8 @@ function sendMessage () {
 				username: 'Me',
 				message: message.txt,
 				roomId : CURRENT_ROOM
-			});
+			},
+			{updateMessageCount : false});
 //			tell server to execute 'new message' and send along one parameter
 			socket.emit('new message', message);
 		}
@@ -43,22 +44,12 @@ socket.on('login_success', function (data) {
 	connected = true;
 	navbarConnected(data.username);
 	setRooms(data.rooms);
-});/*
-socket.on('disconnect', function(){
-	console.log("disc");
-	navbarDisconnected();
-	setRooms([{display_name : "please connect", id : 0}]);
-	CURRENT_ROOM = null;
-	var  roomNode = document.querySelector('#room-list>.rooms');
-	while (roomNode.firstChild) {
-		roomNode.removeChild(roomNode.firstChild);
-	}
-});*/
+});
 socket.on('log_out', function(){
 	navbarDisconnected();
 	setRooms([{display_name : "please connect", id : 0}]);
 	CURRENT_ROOM = null;
-	var  roomNode = document.querySelector('#room-list>.rooms');
+	var  roomNode = document.querySelector('.side-panel>.side-panel-list');
 	while (roomNode.firstChild) {
 		roomNode.removeChild(roomNode.firstChild);
 	}
@@ -69,8 +60,13 @@ socket.on('new message', function (data) {
 	addMessageElement(data);
 });
 //When the server give all previous history, init the chat with message
-socket.on('recover_history', function (data) {
+socket.on('recover_history', function (data){
 	recoverHistory(data);
+});
+//When the server give the count of meesages not read, actualise the count.
+socket.on('unread_messages', function (data) {
+	console.log(data);
+	updateNewMessageCount({roomId : data.roomId.id[0]},{setMessageCount : data.unread});
 });
 //Whenever the server emits 'user joined', log it in the chat body
 socket.on('user joined', function (data) {

@@ -16,11 +16,11 @@ exports = module.exports = function(app){
 	
 	app.use(function(req, res, next){
 		if (req.originalUrl!="/login" && req.originalUrl!="/logout"){//something else than public page(who doesnt need to connect)
-			if (req.session.fauchChat && req.session.fauchChat.sid){//check if there is a cookie
-				chatSession.getUid(req.session.fauchChat.sid,function(userId){//and if it match to a user
+			if (req.session.rSAS && req.session.rSAS.sid){//check if there is a cookie
+				chatSession.getUid(req.session.rSAS.sid,function(userId){//and if it match to a user
 					if(userId){
 						req.data={
-							connectionID : req.session.fauchChat.sid,//ATTENTION, à remplacer par ConnectionID
+							connectionID : req.session.rSAS.sid,//ATTENTION, à remplacer par ConnectionID
 							userID : userId
 						};
 						next();
@@ -37,9 +37,9 @@ exports = module.exports = function(app){
 	
 	
 	app.get("/login",function(req, res, next){
-		if (req.session.fauchChat && req.session.fauchChat.sid){ 
+		if (req.session.rSAS && req.session.rSAS.sid){ 
 			//Si, sur le cookie, on trouve un id de session, on va le comparer à ceux qui sont actifs 
-			try{chatSession.getUid(req.session.fauchChat.sid,function(userId){res.redirect('/chat');});//si on trouve :  on redirige vers le chat
+			try{chatSession.getUid(req.session.rSAS.sid,function(userId){res.redirect('/chat');});//si on trouve :  on redirige vers le chat
 			}
 			catch (exception) {
 				/* 
@@ -52,19 +52,26 @@ exports = module.exports = function(app){
 			}
 		}
 		else {
-			//Sinon, on ne fait rien et on charge le login	
+			//if we find no cookies in the browser, we send to the login
 			res.render('login.ejs',{message : {}});
 		}	
 	});
 
 	app.post("/login",function(req,res,next){
+		console.log(req)
+		console.log("")
+		console.log("")
+		console.log("")
+		console.log("")
+		console.log("")
+		console.log("")
 		chatLogin.login({user : req.body.user,key :req.body.pass},
 		function(connectInfo){
 			if(connectInfo.isConnected){
 			var new_SID= Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 45);
 			chatSession.add(new_SID,connectInfo.uid,function(){
-				req.session.fauchChat={sid : new_SID};		
-				res.redirect("/chat");
+				req.session.rSAS={sid : new_SID};		
+				res.redirect("/");
 			});
 			}
 			else{res.render('login.ejs',{message : { error : connectInfo.error }});}
@@ -72,11 +79,11 @@ exports = module.exports = function(app){
 	});
 
 	app.get("/logout",function(req, res, next){
-		if (req.session.fauchChat && req.session.fauchChat.sid){ 
+		if (req.session.rSAS && req.session.rSAS.sid){ 
 			//Si, sur le cookie, on trouve un id de session, on va le comparer à ceux qui sont actifs 	
-			try{chatSession.getUid(req.session.fauchChat.sid,function(userId){
-					chatSession.rm(req.session.fauchChat.sid,userId);
-					delete req.session.fauchChat.sid;
+			try{chatSession.getUid(req.session.rSAS.sid,function(userId){
+					chatSession.rm(req.session.rSAS.sid,userId);
+					delete req.session.rSAS.sid;
 				});//si on trouve :  on l'enleve sur le browser et la DB
 				res.render('login.ejs',{message : {success : "successfully logged out"}});
 			}
@@ -85,7 +92,7 @@ exports = module.exports = function(app){
 				 * "no entry found"       : le cookie sur le navigateur de l'user etait périmé ou erroné  :dans ce cas on le delete quand meme
 				 * "too much entry found" : plusieurs utilisateurs utilisent la même clé de session (murphy's law) :dans ce cas on le delete quand meme 
 				 */
-				req.session.fauchChat={};
+				req.session.rSAS={};
 				res.render('login.ejs',{message : {}});
 				console.log("error  : "+exception.message);
 			}
@@ -96,7 +103,7 @@ exports = module.exports = function(app){
 		}	
 	});
 
-	app.get("/chat",function(req, res, next){
+	app.get("/",function(req, res, next){
 		res.render('chat.ejs',req.data);
 	});
 
