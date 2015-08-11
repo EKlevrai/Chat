@@ -25,7 +25,7 @@ var ldap = require('ldapjs');
 	 * 			
 	 */
 	var connectUser = function(username,key,whatToDo){
-		client.bind("cn="+username+",ou=users,dc=reactor,dc=lan",key, function(err) {
+		client.bind("cn="+username+",ou=users,dc=rBOX,dc=lan",key, function(err) {
 			var connectInfo;
 			if(err){
 				console.log("Error " +JSON.stringify(err));
@@ -63,10 +63,8 @@ var ldap = require('ldapjs');
 			attributes : ['memberUid']
 		};
 		if(room && room!=""){
-			client.search('ou=groups,dc=reactor,dc=lan', opts, function(err, res) {
+			client.search('ou=groups,dc=rBOX,dc=lan', opts, function(err, res) {
 			  res.on('searchEntry', function(entry) {
-//console.log("new contact : "+ JSON.stringify(entry));
-//console.log("new contact : "+ entry.toString());
 				users_id=entry.attributes[0].vals;
 			  });
 			  res.on('searchReference', function(referral) {
@@ -98,7 +96,7 @@ var ldap = require('ldapjs');
 			  attributes : ['gidNumber']
 		};
 		var id_rooms=[];
-		client.search('ou=groups,dc=reactor,dc=lan', opts, function(err, res) {
+		client.search('ou=groups,dc=rBOX,dc=lan', opts, function(err, res) {
 			res.on('searchEntry', function(entry) {
 				id_rooms.push(entry.attributes[0].vals);
 			});
@@ -122,7 +120,6 @@ var ldap = require('ldapjs');
 	 */
 	var roomDetailed=  function(rid,whatToDo) {
 		var attr=['cn']
-		if (rid.length>1){console.log("attention, le chatLDAP.detailRoom va pas trop marcher, vu qu'il y a plus d'un élément à rid");}
 		var data=[];
 		rid.forEach(function(e){
 			var opts = {
@@ -130,7 +127,7 @@ var ldap = require('ldapjs');
 				scope: 'one',
 				"attributes" : attr
 			};
-			client.search('ou=groups,dc=reactor,dc=lan', opts, function(err, res) {
+			client.search('ou=groups,dc=rBOX,dc=lan', opts, function(err, res) {
 				res.on('searchEntry', function(entry) {
 					data.push({ "id" :  e, "display_name" : entry.attributes[0].vals[0]});			
 				});
@@ -161,11 +158,8 @@ var ldap = require('ldapjs');
 	 * @param whatToDo : callback function fct ([users_ids])
 	 */
 	var peopleForPeople = function(uname,whatToDo){
-console.log("find contact of : "+uname )
 		roomForPeople(uname,function(rooms){
-console.log("find people of room : "+rooms )
 			peopleInRoom(rooms,function(users){
-console.log("users are : "+users )
 				whatToDo(users);
 			});
 		})
@@ -212,7 +206,7 @@ console.log("users are : "+users )
 			"attributes" : attributes
 		};
 		var data={};
-		client.search('ou=users,dc=reactor,dc=lan', opts, function(err, res) {
+		client.search('ou=users,dc=rBOX,dc=lan', opts, function(err, res) {
 			res.on('searchEntry', function(entry) {
 				for(var i=0;i<attributes.length;i++){
 					if(entry.attributes[i].vals.length==1)data[args[i]]=entry.attributes[i].vals[0];
